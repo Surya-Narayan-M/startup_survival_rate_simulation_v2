@@ -9,6 +9,8 @@ This script:
 """
 
 import time
+from pathlib import Path
+import json
 from startup_model import StartupModel
 import config
 import analysis
@@ -86,6 +88,25 @@ def main():
     ║                                                                  ║
     ╚══════════════════════════════════════════════════════════════════╝
     """)
+    
+    # Load saved configuration if it exists
+    if Path('policy_config.json').exists():
+        print("\n📋 Loading saved policy configuration...")
+        try:
+            with open('policy_config.json', 'r') as f:
+                saved_config = json.load(f)
+            
+            # Update config module with saved values
+            for key, value in saved_config.items():
+                setattr(config, key, value)
+            
+            print("✓ Configuration loaded from policy_config.json")
+        except Exception as e:
+            print(f"⚠ Warning: Could not load configuration: {str(e)}")
+            print("Using default configuration...")
+    else:
+        print("\n📌 No saved configuration found. Using defaults.")
+        print("💡 Tip: Run 'python policy_gui.py' to configure policies")
     
     # Configuration summary
     print(f"\nCONFIGURATION:")
